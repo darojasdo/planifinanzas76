@@ -1,11 +1,23 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
 import db
-
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+origins = [
+    "http://localhost",
+    "http://localhost:8081",
+    "https://cajero-app76.herokuapp.com"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = origins,
+    allow_credentials = True,
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
 
 @app.get("/transacciones/")
 async def obtener_transacciones():
@@ -18,4 +30,4 @@ async  def agregar_transaccion(transaccion:db.Transaccion):
     if agregada_exitosamente:
         return {"mensaje":"Transacción agregada exitosamente"}
     else:
-        raise  HTTPException(status_code=400, detail="Erros, el id de la transaccion y existe ")
+        raise  HTTPException(status_code=400, detail="Error, el id de la transaccion ya existe ")
